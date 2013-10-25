@@ -1,0 +1,49 @@
+#!/usr/bin/env ruby
+
+$:.unshift(File.expand_path('../', File.dirname(__FILE__)))
+require 'app.rb'
+
+def visits_by_day
+  visits_by_day = Visit.limit(30000).order('visit_time DESC').select(:visit_time).group_by { |v| v.visit_time.at_beginning_of_day }
+  visits_by_day.each do |k, v|
+    if (k >= 30.days.ago)
+      puts "#{k.strftime('%A %B %d')}:\t #{v.count} \t #{"#" * (v.count / 60)}"
+    end
+  end
+end
+
+def top_sites
+  Url.order('visit_count desc').limit(5).each do |u| 
+    url = URI.parse(u.url).host
+    puts "#{url}  \t #{u.visit_count} \t #{"#" * (u.visit_count / 60)}"
+  end
+end
+
+puts "Top Visited Sites"
+top_sites
+puts
+puts "Visits by Day"
+visits_by_day
+ChromeSpy.most_frequently_typed_addresses
+
+# What do I visit the most often?
+# When do I visit?
+#   -> Per domain
+#   -> All domains
+#   -> When
+#       -> Day of week
+#       -> Time of day
+#       -> Month over month
+#       -> Day over day
+# When was the first time I visited...
+# Search chrome history
+# frequency by day of the week
+# frequency by day
+# frequency by month
+# frequnecy by time of day
+# Visit.where(url: Url.where("url LIKE 'https://news.ycombinator.com/%'").select(:id)).length
+# visits = Url.find_by( url: 'https://news.ycombinator.com/').visits.length
+# visits = Url.find_by( url: 'https://news.ycombinator.com/').visits
+# visits_by_day = visits.group_by { |v| v.visit_time.at_beginning_of_day }
+# visits_by_day.each { |k, v| puts "#{k.strftime('%B %d, %Y')}:\t #{v.count}" }; true
+
