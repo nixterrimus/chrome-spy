@@ -4,3 +4,4 @@ gem 'sqlite3'
 gem 'activerecord', :require => "active_record"
 
 gem 'pry'
+gem 'rspec'

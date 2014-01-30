@@ -4,9 +4,9 @@ $:.unshift(File.expand_path('../', File.dirname(__FILE__)))
 require 'app.rb'
 
 def visits_by_day
-  visits_by_day = Visit.limit(30000).order('visit_time DESC').select(:visit_time).group_by { |v| v.visit_time.at_beginning_of_day }
+  visits_by_day = Visit.limit(60000).order('visit_time DESC').select(:visit_time).group_by { |v| v.visit_time.at_beginning_of_day }
   visits_by_day.each do |k, v|
-    if (k >= 30.days.ago)
+    if (k >= 120.days.ago)
       puts "#{k.strftime('%A %B %d')}:\t #{v.count} \t #{"#" * (v.count / 60)}"
     end
   end
@@ -19,12 +19,12 @@ def top_sites
   end
 end
 
-puts "Top Visited Sites"
-top_sites
-puts
+#puts "Top Visited Sites"
+#top_sites
+#puts
 puts "Visits by Day"
 visits_by_day
-ChromeSpy.most_frequently_typed_addresses
+#ChromeSpy.most_frequently_typed_addresses
 
 # What do I visit the most often?
 # When do I visit?
